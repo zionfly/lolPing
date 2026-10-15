@@ -3,6 +3,7 @@ import { randomBytes, randomInt } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { userInfo } from 'node:os';
 import { join } from 'node:path';
+import { aiActionFor } from '../shared/ai';
 import { resolveLang, strings, type Strings } from '../shared/i18n';
 import { SETTINGS_CH, type About, type AppStatus } from '../shared/ipc';
 import { announcedEmoteHashes } from '../shared/emotes';
@@ -12,6 +13,7 @@ import type { RoomState } from '../shared/room';
 import { formatRoomCode, parseRoomCode } from '../shared/roomCode';
 import { overlaySettings, type Settings } from '../shared/settings';
 import { updateErrorText, type UpdateState } from '../shared/update';
+import { launchAi } from './aiLauncher';
 import { registerAppScheme, serveAppScheme } from './appProtocol';
 import { resolveTarget, toShared } from './displayNumbers';
 import { EmoteCache } from './emoteCache';
@@ -299,6 +301,12 @@ function start(): void {
   overlays.on('shared', (p: SharedPing) => {
     const shared = toShared(overlays.numbered(), p.displayId, p.x, p.y);
     if (shared) room.sendPing(p.id, shared);
+    // The script is macOS-only: it uses screencapture, osascript and pbcopy, and takes global points.
+    const action = IS_MAC ? aiActionFor(settings.aiPings, settings.aiPingMap, p.id) : null;
+    const display = action ? overlays.numbered().find((d) => d.id === p.displayId) : undefined;
+    if (action && display) {
+      launchAi(settings.aiCommand, action, display.bounds.x + p.x, display.bounds.y + p.y, (msg) => console.warn('[ai]', msg));
+    }
   });
   room.on('remoteEmote', (p) => overlays.spawnRemoteEmote(p));
   overlays.on('sharedEmote', (p: SharedEmote) => {

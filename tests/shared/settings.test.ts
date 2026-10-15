@@ -110,6 +110,17 @@ describe('wheel size', () => {
   });
 });
 
+describe('AI ping settings', () => {
+  it('starts with AI pings off and the default map', () => {
+    expect(normalizeSettings({})).toMatchObject({ aiPings: false, aiPingMap: { push: 'note', omw: 'reply' } });
+  });
+
+  it('keeps a stored switch, map and script path', () => {
+    const s = normalizeSettings({ aiPings: true, aiPingMap: { bait: 'todo' }, aiCommand: '/opt/lolping-ai' });
+    expect(s).toMatchObject({ aiPings: true, aiPingMap: { bait: 'todo' }, aiCommand: '/opt/lolping-ai' });
+  });
+});
+
 describe('room settings', () => {
   const identity = { name: 'darren', color: 5 };
 
@@ -386,6 +397,11 @@ describe('rendererPatch', () => {
     expect(rendererPatch({ volume: 3, updateNotifiedVersion: '9.9.9' })).toEqual({ volume: 3 });
     expect(rendererPatch({ updateNotifiedVersion: null })).toEqual({});
     expect(rendererPatch({ autoUpdateCheck: false })).toEqual({ autoUpdateCheck: false });
+  });
+
+  it('leaves out aiCommand, a program lolPing runs, but keeps the AI switch and ping map', () => {
+    expect(rendererPatch({ aiCommand: '/tmp/evil', aiPings: true })).toEqual({ aiPings: true });
+    expect(rendererPatch({ aiPingMap: { push: 'reply' } })).toEqual({ aiPingMap: { push: 'reply' } });
   });
 
   it('turns a patch that is not an object into no change', () => {

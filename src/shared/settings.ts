@@ -1,3 +1,4 @@
+import { DEFAULT_AI_COMMAND, DEFAULT_AI_PING_MAP, normalizeAiCommand, normalizeAiPingMap, type AiPingMap } from './ai';
 import { DEFAULT_CLICK_EMOTE, DEFAULT_EMOTE_WHEEL } from './emoteCatalog';
 import {
   CUSTOM_NAME_MAX, MAX_CUSTOM_EMOTES, customHash, isCustomRef, normalizeClickEmote, normalizeEmoteWheel,
@@ -76,6 +77,11 @@ export interface Settings {
   autoUpdateCheck: boolean;
   /** The newest version already announced with a toast, as x.y.z, so each version is announced once. */
   updateNotifiedVersion: string | null;
+  /** macOS only: a ping in `aiPingMap` also runs `aiCommand` (the lolping-ai script) on the spot it marks. */
+  aiPings: boolean;
+  aiPingMap: AiPingMap;
+  /** Path to the script. Only the settings file sets it, never the settings window. */
+  aiCommand: string;
 }
 
 /** Per-machine defaults for the room profile: the OS username and a random tag colour. */
@@ -120,6 +126,9 @@ export const DEFAULT_SETTINGS: Settings = {
   friendEmotes: true,
   autoUpdateCheck: true,
   updateNotifiedVersion: null,
+  aiPings: false,
+  aiPingMap: { ...DEFAULT_AI_PING_MAP },
+  aiCommand: DEFAULT_AI_COMMAND,
 };
 
 export const LIMITS = {
@@ -134,7 +143,7 @@ export const LIMITS = {
 
 type NumKey = keyof typeof LIMITS;
 type BoolKey = 'enabledOnStart' | 'clickPing' | 'gameCheck' | 'keepLastPing' | 'muted' | 'tickSound' | 'launchAtStartup' | 'allowInternet' | 'rejoinRoom' | 'roomMuted'
-  | 'emoteClick' | 'emoteSound' | 'friendEmotes' | 'autoUpdateCheck';
+  | 'emoteClick' | 'emoteSound' | 'friendEmotes' | 'autoUpdateCheck' | 'aiPings';
 
 const isObj = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v);
 const isVk = (v: unknown): v is number => Number.isInteger(v) && (v as number) >= 1 && (v as number) <= 254;
@@ -263,6 +272,9 @@ export function normalizeSettings(raw: unknown, platform: Platform = 'win', iden
     friendEmotes: bool(r.friendEmotes, 'friendEmotes'),
     autoUpdateCheck: bool(r.autoUpdateCheck, 'autoUpdateCheck'),
     updateNotifiedVersion: isVersion(r.updateNotifiedVersion) ? r.updateNotifiedVersion : null,
+    aiPings: bool(r.aiPings, 'aiPings'),
+    aiPingMap: normalizeAiPingMap(r.aiPingMap),
+    aiCommand: normalizeAiCommand(r.aiCommand),
   };
 }
 
@@ -273,11 +285,12 @@ export function mergeSettings(current: Settings, patch: Partial<Settings>, platf
 /**
  * A patch from the settings window, before it is merged. Imported emotes are left out: they change only through importing
  * and removing, which check the files behind them. `updateNotifiedVersion` is the update checker's own note (which version
- * it already announced), so the window can't set it either. Anything that isn't an object changes nothing.
+ * it already announced), so the window can't set it either. `aiCommand` is a program lolPing runs, so only the settings
+ * file sets it. Anything that isn't an object changes nothing.
  */
 export function rendererPatch(raw: unknown): Partial<Settings> {
   if (!isObj(raw)) return {};
-  const { customEmotes: _emotes, updateNotifiedVersion: _notified, ...patch } = raw;
+  const { customEmotes: _emotes, updateNotifiedVersion: _notified, aiCommand: _command, ...patch } = raw;
   return patch as Partial<Settings>;
 }
 

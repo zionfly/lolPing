@@ -1,3 +1,4 @@
+import type { AiAction } from './ai';
 import type { PingId } from './pings';
 import type { Platform } from './platform';
 import type { MemberPath } from './room';
@@ -271,6 +272,15 @@ const en = {
   trayCheckForUpdates: 'Check for updates',
   trayDownloading: (n: number) => `Downloading update… ${n}%`,
   trayInstalling: 'Installing update…',
+  navAi: 'AI',
+  aiPings: 'Ask AI after a ping',
+  aiPingsDesc: 'A ping with an action below also hands the window under it to Claude Code or Codex, through the lolping-ai script.',
+  aiCommand: 'Script',
+  aiCommandDesc: 'To use another path, set aiCommand in settings.json.',
+  aiMapTitle: 'What each ping asks',
+  aiMapDesc: 'The pings on your wheel. Ping only means no AI.',
+  aiActionNone: 'Ping only',
+  aiActionNames: { note: 'Take a note', reply: 'Draft a reply', explain: 'Explain', search: 'Search the code', todo: 'Add a to-do' } as Record<AiAction, string>,
 };
 
 export type Strings = typeof en;
@@ -524,6 +534,15 @@ const zh: Strings = {
   trayCheckForUpdates: '检查更新',
   trayDownloading: (n) => `正在下载更新… ${n}%`,
   trayInstalling: '正在安装更新…',
+  navAi: 'AI',
+  aiPings: '发信号后唤起 AI',
+  aiPingsDesc: '下面设了动作的信号，放下后会通过 lolping-ai 脚本，把信号所在的窗口交给 Claude Code 或 Codex。',
+  aiCommand: '脚本',
+  aiCommandDesc: '要换路径，请编辑 settings.json 里的 aiCommand。',
+  aiMapTitle: '每个信号做什么',
+  aiMapDesc: '你轮盘上的信号。“只发信号”表示不唤起 AI。',
+  aiActionNone: '只发信号',
+  aiActionNames: { note: '记笔记', reply: '起草回复', explain: '解释', search: '查代码', todo: '记待办' },
 };
 
 /** Wording that differs on macOS: menu bar instead of tray, Finder, login items, ⌃ ⌥ ⌘. */

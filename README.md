@@ -114,6 +114,22 @@ Join a room and everyone in it sees your pings on their own screen, at the same 
 - A room holds up to 8 people. Leave and create a new room to get rid of someone.
 - **Privacy:** pings, emotes, your emote images and names are end-to-end encrypted with a key made from the room code. People on your network can see your local IP address. With internet connections on, public relays see your IP address, an anonymous room ID and when you send, but never your pings, emotes, images or name. Turn **Allow internet connections** off to stay on your local network.
 
+## Ask AI after a ping (macOS)
+
+With **Settings → AI → Ask AI after a ping** on, some pings also hand the window under them to Claude Code or Codex. The ping looks and sounds the same; then the [lolping-ai](https://github.com/zionfly/lolping-ai) script takes a screenshot of that window, copies the selected text and sends both to the agent, on this Mac or on a dev box over ssh.
+
+| Ping | Asks the agent to |
+| --- | --- |
+| Push | Take a note |
+| On My Way | Draft a reply (copied to the clipboard, never sent) |
+| Assist Me | Explain |
+| Need Vision | Search the code |
+| Danger | Add a to-do |
+
+Change the actions per ping in the same page. Other pings stay plain pings. Install the script first (see its README), and allow lolPing under **Screen & System Audio Recording** as well as Accessibility.
+
+- **Privacy:** the screenshot and the selected text go to the machine the script is set up for, and from there to the agent's provider. Nothing is sent while the switch is off, and Windows and Linux never run the script.
+
 ## Known limitations
 
 - The wheel can't open over windows running as administrator, such as Task Manager. Windows hides their input from normal apps.
