@@ -1,8 +1,11 @@
 import { isPingId, type PingId } from './pings';
 
-/** What a ping asks the `lolping-ai` script to do after it lands. */
-export type AiAction = 'note' | 'reply' | 'explain' | 'search' | 'todo';
-export const AI_ACTIONS: readonly AiAction[] = ['note', 'reply', 'explain', 'search', 'todo'];
+/**
+ * What a ping asks the `lolping-ai` script to do after it lands. 'claude' and 'codex' open a new session in that desktop
+ * app with the context typed in, so the user asks the question; the rest run an agent in the background.
+ */
+export type AiAction = 'note' | 'reply' | 'explain' | 'search' | 'todo' | 'claude' | 'codex';
+export const AI_ACTIONS: readonly AiAction[] = ['claude', 'codex', 'note', 'reply', 'explain', 'search', 'todo'];
 
 /** Pings that start an AI action. A ping missing from the map is only a ping. */
 export type AiPingMap = Partial<Record<PingId, AiAction>>;
@@ -13,6 +16,8 @@ export const DEFAULT_AI_PING_MAP: Readonly<AiPingMap> = {
   assist: 'explain',
   needvision: 'search',
   danger: 'todo',
+  missing: 'claude',
+  enemyvision: 'codex',
 };
 
 export const DEFAULT_AI_COMMAND = '~/.local/bin/lolping-ai';

@@ -125,6 +125,8 @@ With **Settings → AI → Ask AI after a ping** on, some pings also hand the wi
 | Assist Me | Explain |
 | Need Vision | Search the code |
 | Danger | Add a to-do |
+| Enemy Missing | Open a new session in the Claude desktop app with the context typed in; you ask the question |
+| Enemy Vision | The same in the Codex desktop app |
 
 Change the actions per ping in the same page. Other pings stay plain pings. Install the script first (see its README), and allow lolPing under **Screen & System Audio Recording** as well as Accessibility.
 

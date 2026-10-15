@@ -9,13 +9,19 @@ describe('ai', () => {
     expect(aiActionFor(false, DEFAULT_AI_PING_MAP, 'push')).toBeNull();
   });
 
+  it('opens the desktop apps from the question-mark and enemy vision pings by default', () => {
+    expect(aiActionFor(true, DEFAULT_AI_PING_MAP, 'missing')).toBe('claude');
+    expect(aiActionFor(true, DEFAULT_AI_PING_MAP, 'enemyvision')).toBe('codex');
+  });
+
   it('leaves a ping that is not in the map as a plain ping', () => {
     expect(aiActionFor(true, DEFAULT_AI_PING_MAP, 'bait')).toBeNull();
     expect(aiActionFor(true, {}, 'push')).toBeNull();
   });
 
   it('keeps valid entries of a stored map and drops unknown pings and actions', () => {
-    expect(normalizeAiPingMap({ push: 'reply', nope: 'note', omw: 'rm -rf', bait: 'todo' })).toEqual({ push: 'reply', bait: 'todo' });
+    expect(normalizeAiPingMap({ push: 'reply', nope: 'note', omw: 'rm -rf', bait: 'todo', allin: 'codex' }))
+      .toEqual({ push: 'reply', bait: 'todo', allin: 'codex' });
   });
 
   it('uses the default map when the stored one is missing or not an object', () => {
